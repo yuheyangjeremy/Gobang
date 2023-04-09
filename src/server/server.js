@@ -25,7 +25,7 @@ db.once("open", function () {
 
     // create a test user
     app.get('/testUser', (req, res) => {
-        User.create({ username: "admin123", pwd: "123456", admin: true}, (err, e) => {
+        User.create({ username: "user001", pwd: "123456", admin: false}, (err, e) => {
             if (err) console.log(err);
             res.send(e);
         });
