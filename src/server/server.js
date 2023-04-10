@@ -13,7 +13,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const { db, User, Game } = require("./db");
 
 const login = require("./login");
+const admin = require("./admin");
 app.use("/login", login);
+app.use("/admin", admin);
 
 // on error
 db.on("error", console.error.bind(console, "Connection error:"));
