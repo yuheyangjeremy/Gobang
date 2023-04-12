@@ -18,6 +18,7 @@
   },
   "!homepage": "https://github.com/yuheyangjeremy/Gobang#readme",
   "dependencies": {
+    "@testing-library/react": "^13.4.0",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -29,8 +30,7 @@
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.2",
-    "react-scripts": "^5.0.1",
-    "@testing-library/react": "^13.4.0"
+    "react-scripts": "^5.0.1"
   },
   "browserslist": {
     "production": [
@@ -43,5 +43,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "css-modules": "^0.3.0"
   }
 }

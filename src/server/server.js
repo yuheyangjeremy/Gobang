@@ -14,8 +14,12 @@ const { db, User, Game } = require("./db");
 
 const login = require("./login");
 const admin = require("./admin");
+const game = require("./game");
+const records = require("./records")
 app.use("/login", login);
 app.use("/admin", admin);
+app.use("/game", game);
+app.use("/records", records);
 
 // on error
 db.on("error", console.error.bind(console, "Connection error:"));

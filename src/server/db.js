@@ -5,16 +5,18 @@ mongoose.connect("mongodb+srv://stu173:p212727W@cluster0.gbo7pn3.mongodb.net/stu
 const UserSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
     pwd: { type: String, required: true },
-    admin: { type: Boolean, required: true },
+    admin: { type: Boolean, required: true }
 });
 
 const GameSchema = mongoose.Schema({
-    player1: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    player2: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    record: [{type: Number}],
+    gameId: { type: Number, unique: true },
+    player1: { type: String },
+    player2: { type: String },
+    record: [{role: Number, x: Number, y: Number}],
     startTime: {type: Number},
     elapsedTime: {type: Number},
-    Status: {type: Number}
+    Status: {type: Number},
+    currentPlayer: {type: Number}
 });
 
 

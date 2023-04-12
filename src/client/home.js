@@ -12,7 +12,7 @@ class Home extends React.Component{
         this.check = this.check.bind(this);
         this.signUp = this.signUp.bind(this);
         this.isEmpty = this.isEmpty.bind(this);
-        this.state = { isLoggedIn: false, isAdmin: false, text: null, count: 0, n: null, p: null }
+        this.state = { isLoggedIn: false, isAdmin: false, text: null, username: null }
     }
 
     // empty checking fuction
@@ -56,10 +56,10 @@ class Home extends React.Component{
 
             if(response.validity){
                 if(response.isAdmin){
-                    this.setState({ isLoggedIn: true, isAdmin: true });
+                    this.setState({ isLoggedIn: true, isAdmin: true , username: uname});
                     alert(response.text);
                 }else{
-                    this.setState({ isLoggedIn: true, isAdmin: false });
+                    this.setState({ isLoggedIn: true, isAdmin: false, username: uname });
                     alert(response.text);
                 }
             }else{
@@ -113,7 +113,7 @@ class Home extends React.Component{
             if(this.state.isAdmin){
                 body = <Admin />
             }else{
-                body = <User />
+                body = <User username={this.state.username}/>
             }
         }else{
             body = <Login check={this.check} signUp={this.signUp} />
