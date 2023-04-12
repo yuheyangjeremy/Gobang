@@ -2,8 +2,6 @@ import ReactDOM from "react-dom/client";
 import React from 'react';
 import $ from 'jquery';
 
-import styles from './gameStyles.css';
-
 class Game extends React.Component{
     constructor(props){
         super(props);
@@ -19,8 +17,7 @@ class Game extends React.Component{
     render(){
         return(
             <div>
-                {/* render the game UI */}
-                {/* <button onClick={() => this.returnToUserPage()}>Return to Home Page</button> */}
+                <button onClick={() => this.returnToUserPage()}>Return to Home Page</button>
             </div>
         )
     }

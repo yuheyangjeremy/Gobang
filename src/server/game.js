@@ -15,7 +15,14 @@ db.once("open", function () {
         var role = req.body['role'];
         var x = req.body['x'];
         var y = req.body['y'];
-        Game.findOneAndUpdate({ gameId: req.params['gameId'] }, { $addToSet: { record: {role,x,y} }} , (err, e) => {
+        var nextRole = 1;
+        if (role == 1) {
+            nextRole = 2;
+        }
+        Game.findOneAndUpdate({ gameId: req.params['gameId'] }, { 
+            $addToSet: { record: {role,x,y} },
+            $set: { currentPlayer: nextRole }
+        }, { new: true }, (err, e) => {
             if(err) console.log(err)
             res.send(e)
         });
@@ -32,7 +39,7 @@ db.once("open", function () {
                 if(result[0].player2 == null){
                     joinAs = 2;
                     gameId = result[0].gameId;
-                    Game.findOneAndUpdate({ gameId: gameId }, { player2: req.body['username'] }, (err, result) => {
+                    Game.findOneAndUpdate({ gameId: gameId }, { player2: req.body['username'] }, { new: true }, (err, result) => {
                         console.log(err);
                         console.log(result);
                         res.send(result);
@@ -40,7 +47,7 @@ db.once("open", function () {
                 }else{
                     joinAs = 1;
                     gameId = result[0].gameId + 1;
-                    Game.create({ gameId: gameId, player1: req.body['username'] }, (err, result) => {
+                    Game.create({ gameId: gameId, player1: req.body['username'], Status: 0, currentPlayer: 1 }, (err, result) => {
                         console.log(err);
                         console.log(result);
                         res.send(result);
@@ -66,6 +73,8 @@ db.once("open", function () {
                 if (tupleArray.length >= 1){
                     tupleArray = tupleArray.slice(0, tupleArray.length - 1);
                 }
+                // change current player
+                result.currentplayer = req.body['role'];
             }
             result.record = tupleArray;
             result.save((err) => {
@@ -75,6 +84,35 @@ db.once("open", function () {
                     console.log("successfully regret");
                 }
             });
+        })
+    })
+
+    router.get('/:gameId', (req, res) => {
+        Game.findOne({ gameId: req.params['gameId'] }, (err, result) =>{
+            if(err){
+                console.log(err);
+                return;
+            }
+            res.send(result);
+        })
+    })
+
+    router.put('/win/:gameId', (req, res) =>{
+        var winner = req.body['winner'];
+        var x = req.body['x'];
+        var y = req.body['y'];
+        Game.findOneAndUpdate({ gameId: req.params['gameId'] }, { 
+            $addToSet: { record: {winner,x,y} },
+            $set: { Status: winner }
+        }, (err, e) => {
+            if(err) console.log(err)
+            res.send(e)
+        });
+    })
+
+    router.get('/startgame/:gameId', (req, res) => {
+        Game.findOne({ gameId: req.params['gameId'] }, (err, result) => {
+            res.send(result);
         })
     })
 

@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom/client";
 import React from 'react';
-
+import Cookies from 'universal-cookie'
+const cookies = new Cookies();
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 
 import Home from './client/home';
@@ -12,7 +13,7 @@ const APP = () => {
     return(
         <BrowserRouter>
             <Routes>
-                <Route path="/index" element={<Home />} />
+                <Route path="/" element={<Home />} />
             </Routes>
         </BrowserRouter>
     );
