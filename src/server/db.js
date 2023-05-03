@@ -13,10 +13,11 @@ const GameSchema = mongoose.Schema({
     player1: { type: String },
     player2: { type: String },
     record: [{role: Number, x: Number, y: Number}],
-    startTime: {type: Number},
-    elapsedTime: {type: Number},
-    Status: {type: Number},
-    currentPlayer: {type: Number}
+    startTime: {type: String},
+    elapsedTime: {type: String},
+    Status: {type: Number},// -1 not ready; 0 start; 1 player1 win; 2 player2 win; 3 player1 regret; 4 player2 regret
+    currentPlayer: {type: Number},
+    comments:[{role:Number, x: Number}]
 });
 
 

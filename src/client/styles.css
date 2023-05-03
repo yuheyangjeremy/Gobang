@@ -1,0 +1,67 @@
+/* 对整个登录表单进行样式设置 */
+form {
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 400px;
+  padding: 20px;
+}
+
+/* 对标题进行样式设置 */
+h1 {
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+/* 对输入框进行样式设置 */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+  display: block;
+  font-size: 24px;
+  margin-bottom: 20px;
+  padding: 10px;
+  width: 95%;
+}
+
+/* 对标签进行样式设置 */
+label {
+  color: #333;
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+/* 对按钮进行样式设置 */
+button {
+  background-color: #008000;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 10px;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #006400;
+}
+
+
+.my-iframe {
+  width: 2000px;
+  height: 1200px;
+}

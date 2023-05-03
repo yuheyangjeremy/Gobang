@@ -13,10 +13,12 @@ db.once("open", function (){
 
     router.get('/getRecords/:username', (req, res) => {
         let username = req.params['username'];
+        console.log(username);
         Game.find({ $or: [ { player1: username }, { player2: username } ] }, (err, result) => {
             if (err) {
                 console.log(err);
             } else {
+                console.log(result);
                 res.send(result);
             }
         });

@@ -40,6 +40,7 @@ db.once("open", function () {
                             res.set('Content-Type', 'application/json');
                             temp_string = "Welcome administrator " + result.username + "!";
                             data = { validity: true, isAdmin: true, username: result.username, text: temp_string };
+                            res.cookie('username',result.username)
                             res.json(data);
                         }
                         else {
@@ -47,6 +48,7 @@ db.once("open", function () {
                             temp_string = "Welcome " + result.username + "!";
                             result.text = temp_string;
                             data = { validity: true, isAdmin: false, username: result.username, text: temp_string };
+                            res.cookie('username',result.username)
                             res.json(data);
                         }
                     }

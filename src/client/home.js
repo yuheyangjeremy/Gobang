@@ -98,7 +98,7 @@ class Home extends React.Component{
         .then(response => {
             console.log(response);
             if(response.validity){
-                this.setState({ isLoggedIn: true, isAdmin: false });
+                this.setState({ isLoggedIn: true, isAdmin: false, username: uname });
                 alert(response.text);
             }else{
                 alert(response.text);

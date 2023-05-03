@@ -121,30 +121,30 @@
 	<div class="talk_con">
 		<div style="display: flex; justify-content: center; align-items: center;">
 			<div id="red-ball-opponent"></div>
-			<span style="font-size: 16pt;"> &nbsp;&nbsp; </span>
+			<span style="font-size: 24pt;"> &nbsp;&nbsp; </span>
 			<img src="player_img_opponent.png" style="float: left;">
-			<span style="font-size: 16pt;" id="myDiv2"> &nbsp;&nbsp;&nbsp;&nbsp; Waiting... &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+			<span style="font-size: 24pt;" id="myDiv2"> &nbsp;&nbsp;&nbsp;&nbsp; Player 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
 			<div style="width: 16px; height: 16px; border: 1px solid black; border-radius: 50%; background-color: white;"></div>
 		</div>
 
 		<div> <br /> </div>
 		<div class="talk_show" id="words">
-			<div class="atalk"><span id="asay">Hello!</span></div>
-			<div class="btalk"><span id="bsay">Hello!</span></div>
+			<div class="atalk"><span id="asay">A testing</span></div>
+			<div class="btalk"><span id="bsay">B testing</span></div>
 		</div>
 		<div class="talk_input">
-			<button type="button" value="GG" class="talk_sub" id="talksub-gg" onclick=inputNewComments(1)>GG</button>
-			<button type="button" value="Sorry" class="talk_sub" id="talksub-sorry"onclick=inputNewComments(2)>Sorry</button>
-			<button type="button" value="Wow" class="talk_sub" id="talksub-wow" onclick=inputNewComments(3)>Wow</button>
+			<input type="button" value="GG" class="talk_sub" id="talksub-gg">
+			<input type="button" value="Sorry" class="talk_sub" id="talksub-sorry">
+			<input type="button" value="Wow" class="talk_sub" id="talksub-wow">
 		</div>
 
 		<div> <br /> <br /> <br /> </div>
 
 		<div style="display: flex; justify-content: center; align-items: center;">
 			<div id="red-ball-user"></div>
-			<span style="font-size: 16pt;"> &nbsp;&nbsp; </span>
+			<span style="font-size: 24pt;"> &nbsp;&nbsp; </span>
 			<img src="player_img_user.png" style="float: left;">
-			<span style="font-size: 16pt;"  id="myDiv1"> &nbsp;&nbsp;&nbsp;&nbsp; Waiting... &nbsp;&nbsp; </span>
+			<span style="font-size: 24pt;"  id="myDiv1"> &nbsp;&nbsp;&nbsp;&nbsp; Player 1 (You) &nbsp;&nbsp; </span>
 			<div style="width: 18; height: 18; border-radius: 50%; background-color: black;"></div>
 		</div>
 		  
@@ -156,7 +156,6 @@
 		const gameId = window.frameElement.getAttribute('gameid');
 		const username = window.frameElement.getAttribute('username');
 		const role = window.frameElement.getAttribute('role');
-		var comment_length = 0;
 		var player1name = null;
 		var player2name = null;
 
@@ -193,34 +192,24 @@
 			resetAndInit() {
 
 				this.role = parseInt(role);//options.role || this.role || 1
-				this.last_status = -1
+
 				const { options } = this
-				this.status = -1
 				var alert_matching = false
 				this.interval = setInterval(() =>{
 					fetch('http://localhost:3000/game/'+gameId)
 						.then((result) => result.json())
 						.then((text) =>{
-							this.status = text.Status
-							console.log(this.status,this.last_status)
-							if (text.Status <3){								
-								this.getCheckerBoard(text.record)
-							}
 							this.getCheckerBoard(text.record)
-							this.status = parseInt(this.status)
-							var comments_list = text.comments 
-                            while(comment_length < comments_list.length){
-								var commentType = comments_list[comment_length].x;
-								var commentRole = comments_list[comment_length].role;
-								printNewComments(commentRole,commentType)
-							}
-							if (this.status == -1){
+							var status = text.Status
+							console.log(status)
+							status = parseInt(status)
+							if (status == -1){
 								if (!alert_matching) {
 									alert_matching = true
 									alert("Waiting for your opponent...")
 								}
 							}
-							if (this.status == 0){
+							if (status == 0){
 								this.player1name = text.player1;
 								this.player2name = text.player2;
 								var myVar1 = "&nbsp;&nbsp;&nbsp;&nbsp;"+this.player1name+"&nbsp;&nbsp;";
@@ -231,53 +220,18 @@
 								myDiv2.innerHTML = myVar2;
 								this.currentPlayer = text.currentPlayer
 							}
-							if (this.status == 1 || this.status == 2){
+							if (status == 1 || status == 2){
 								this.chessmans.onclick = null
 								this.win = true
-								alert((this.status == 1 ? this.player1name : this.player2name) +" win!")
 								clearInterval(this.interval)
 							}
-							if (this.status == 0 && this.last_status >=3){
-								this.cleanCheckerBoard();
-								this.getCheckerBoard(text.record);
-							}
-							if (this.status == 3 && role == 2 && this.last_status == 0){
-								var con;
-								con = confirm("The opponent wants to regret. Agree?")
-								if (con){
-									fetch('http://localhost:3000/game/regret/'+gameId,{
-										method: "PUT",
-										headers: { "Content-Type": "application/x-www-form-urlencoded" },
-										body: "role=1"
-									})
-								}else{
-									fetch('http://localhost:3000/game/reset/'+gameId,{
-										method: "PUT",
-										headers: { "Content-Type": "application/x-www-form-urlencoded" },
-										body: "role=1"
-									})
-								}
-							}
-							if (this.status == 4 && role == 1 && this.last_status == 0){
-								var con;
-								con = confirm("The opponent wants to regret. Agree?")
-								if (con){
-									fetch('http://localhost:3000/game/regret/'+gameId,{
-										method: "PUT",
-										headers: { "Content-Type": "application/x-www-form-urlencoded" },
-										body: "role=2"
-									})							
-								}else{
-									fetch('http://localhost:3000/game/reset/'+gameId,{
-										method: "PUT",
-										headers: { "Content-Type": "application/x-www-form-urlencoded" },
-										body: "role=2"
-									})
-								}
-							}
-							this.last_status = this.status;
+							// if (isWin != 0){
+							// 	this.chessmans.onclick = null
+							// 	this.win = true
+							// 	alert((isWin == 1 ? player1name : player2name) +"win!")
+							// }
 					})
-				},500)
+				},100)
 				// 角色 => 1黑棋 2白棋
 
 				// 是否已分出胜负
@@ -346,9 +300,6 @@
 			listenDownChessman(isBlack = false) {
 				this.chessmans.onclick = event => {
 					// 判断目前落子方
-					if (this.status !== 0){
-						return false
-					}
 					if (this.currentPlayer !== this.role){
 						return false
 					}
@@ -442,7 +393,7 @@
 					fetch('http://localhost:3000/game/win/'+gameId,{
 								method: "PUT",
 								headers: { "Content-Type": "application/x-www-form-urlencoded" },
-								body: "winner="+this.role + "&startTime="+startTime+"&elapsedTime="+elapsedTime
+								body: "winner="+this.role
 					})
 					// alert(`${role == 1 ? '黑' : '白'}子胜，${countContinuous}杀！`)
 					alert((this.role == 1 ? this.player1name : this.player2name) +" win!")
@@ -452,34 +403,40 @@
 
 			// 悔棋
 			regretChess() {
-				fetch('http://localhost:3000/game/checkRegret/'+gameId,{
-					method: "PUT",
-					headers: { "Content-Type": "application/x-www-form-urlencoded" },
-					body: "role="+this.role
-				})
+
+				// 找到最后一次的记录，回滚UI，更新矩阵
+				if (this.history.length && !this.win) {
+					const prev = this.history[this.currentStep - 1]
+					if (prev) {
+						const { x, y, role } = prev
+						const targetChessman = document.getElementById(`x${x}-y${y}-r${role}`)
+						targetChessman.parentNode.removeChild(targetChessman)
+						this.checkerboard[prev.x][prev.y] = 0
+						this.currentStep--
+					}
+				}
 			}
 
 			// 撤销悔棋
-			// revokedRegretChess() {
-			// 	const next = this.history[this.currentStep]
-			// 	if (next) {
-			// 		this.drawChessman(next.x, next.y, next.role === 1)
-			// 		this.checkerboard[next.x][next.y] = next.role
-			// 		this.currentStep++
-			// 	}
-			// }
+			revokedRegretChess() {
+				const next = this.history[this.currentStep]
+				if (next) {
+					this.drawChessman(next.x, next.y, next.role === 1)
+					this.checkerboard[next.x][next.y] = next.role
+					this.currentStep++
+				}
+			}
 
 			admitDefeat() {
 				this.chessmans.onclick = null
 				this.win = true
-				fetch('http://localhost:3000/game/win/'+ gameId,{
+				fetch('http://localhost:3000/game/win/:gameID',{
 							method: "PUT",
 							headers: { "Content-Type": "application/x-www-form-urlencoded" },
-							body: "winner="+((this.role == 1) ? 2 : 1) + "&startTime="+startTime+"&elapsedTime="+elapsedTime
+							body: "winner="+this.role+"&x="+x+"&y="+y
 				})
 				// alert(`${role == 1 ? '黑' : '白'}子胜，${countContinuous}杀！`)
-				alert((this.role == 1 ? this.player2name : this.player1name) +" win!")
-				clearInterval(this.interval)
+				alert((this.role == 1 ? player1name : player2name) +"win!")
 			}
 
 			getCheckerBoard(text){
@@ -499,20 +456,6 @@
 				};
 				this.checkerboard = checkerboard
         	}
-
-			cleanCheckerBoard(){
-				let checkerboard = []
-				for (let x = 0; x < this.gobangStyle.count + 1; x++) {
-					checkerboard[x] = []
-					for (let y = 0; y < this.gobangStyle.count + 1; y++) {
-						checkerboard[x][y] = 0
-					}
-				}
-				while (this.chessmans.firstChild){
-					this.chessmans.removeChild(this.chessmans.firstChild)
-				}
-				this.checkerboard = checkerboard
-			}
 
 		}
 
@@ -540,8 +483,6 @@
 		let minutes = 0;
 		let hours = 0;
 
-		let elapsedTime = null;
-
 		// 创建计时器
 		function updateTime() {
 			if (!gobangGame.win) {
@@ -563,8 +504,6 @@
 
 			// 更新计时器元素的文本内容
 			timerElement.textContent = timeString;
-
-			elapsedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 		}
 		setInterval(updateTime, 1000);
 
@@ -582,11 +521,9 @@
 			// 更新页面中的时间元素
 			const timeElement = document.getElementById('startTime');
 			timeElement.textContent = timeString;
-
-			return `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}:${time.getSeconds().toString().padStart(2, '0')}`;
 		}
 
-		const startTime = getStartTime();
+		getStartTime();
 
 
 		function updateRedBall() {
@@ -617,81 +554,63 @@
 		}
 		setInterval(updateRedBall, 100);
 
-		var Words = document.getElementById("words");
-		function inputNewComments(type){
-			var str = "";
-			if (type == 1){
-				if(role == 1){
-					str = '<div class="atalk"><span> Good game </span></div>';
-				 }
-				else{
-					str = '<div class="btalk"><span> Good game </span></div>' ;  
-				}
-			}
-			if (type == 2){
-				if (role == 1){
-					str = '<div class="atalk"><span> Sorry </span></div>';
-				}
-				else{
-					str = '<div class="btalk"><span> Sorry </span></div>' ;
-				}
-			}
-			if (type == 3){
-				if(role == 1){
-					str = '<div class="atalk"><span> Wow!! </span></div>';
-				}
-				else{
-					str = '<div class="btalk"><span> Wow!! </span></div>' ; 
-				}
-			}
-			Words.innerHTML = Words.innerHTML + str;
-			comment_length++
-			console.log(role,type)
-			fetch('http://localhost:3000/game/addComments/'+gameId,{
-					method: "PUT",
-					headers: { "Content-Type": "application/x-www-form-urlencoded" },
-					body: "role="+role+"&type="+type
-				})
-		}
-		function printNewComments(role,type){
-			var str = "";
-			if (type == 1){
-				if(role == 1){
-					str = '<div class="atalk"><span> Good game </span></div>';
-				 }
-				else{
-					str = '<div class="btalk"><span> Good game </span></div>' ;  
-				}
-			}
-			if (type == 2){
-				if (role == 1){
-					str = '<div class="atalk"><span> Sorry </span></div>';
-				}
-				else{
-					str = '<div class="btalk"><span> Sorry </span></div>' ;
-				}
-			}
-			if (type == 3){
-				if(role == 1){
-					str = '<div class="atalk"><span> Wow!! </span></div>';
-				}
-				else{
-					str = '<div class="btalk"><span> Wow!! </span></div>' ; 
-				}
-			}
-			Words.innerHTML = Words.innerHTML + str;
-			comment_length++
-		}
-		// var TalkSubGG = document.getElementById("talksub-gg");
-		// var TalkSubSorry = document.getElementById("talksub-sorry");
-		// var TalkSubWow = document.getElementById("talksub-wow");
 
-		// TalkSubGG.Onclick() = inputNewComments(role,1)
-		// TalkSubGG.onclick = inputNewComments(role,2)
-		// TalkSubSorry.onclick = inputNewComments(role,3)
-      	// window.onload = function(){
-        //     var Who = 1; // who talks? 0: opponent/left; 1: user/right
-        // }
+      	window.onload = function(){
+            var Words = document.getElementById("words");
+            var Who = 1; // who talks? 0: opponent/left; 1: user/right
+            var TalkSubGG = document.getElementById("talksub-gg");
+            var TalkSubSorry = document.getElementById("talksub-sorry");
+            var TalkSubWow = document.getElementById("talksub-wow");
+
+            TalkSubGG.onclick = function(){
+                //定义空字符串
+                var str = "";
+                if(Who.value == 0){
+                    //如果Who.value为0n那么是 A说
+                    str = '<div class="atalk"><span> Good game </span></div>';
+                }
+                else{
+                    str = '<div class="btalk"><span> Good game </span></div>' ;  
+                }
+                Words.innerHTML = Words.innerHTML + str;
+            }
+            TalkSubGG.onclick = function(){
+                //定义空字符串
+                var str = "";
+                if(Who.value == 0){
+                    //如果Who.value为0n那么是 A说
+                    str = '<div class="atalk"><span> Good game! </span></div>';
+                }
+                else{
+                    str = '<div class="btalk"><span> Good game! </span></div>' ;  
+                }
+                Words.innerHTML = Words.innerHTML + str;
+            }
+            TalkSubSorry.onclick = function(){
+                //定义空字符串
+                var str = "";
+                if(Who.value == 0){
+                    //如果Who.value为0n那么是 A说
+                    str = '<div class="atalk"><span> Sorry </span></div>';
+                }
+                else{
+                    str = '<div class="btalk"><span> Sorry </span></div>' ;  
+                }
+                Words.innerHTML = Words.innerHTML + str;
+            }
+            TalkSubWow.onclick = function(){
+                //定义空字符串
+                var str = "";
+                if(Who.value == 0){
+                    //如果Who.value为0n那么是 A说
+                    str = '<div class="atalk"><span> Wow!! </span></div>';
+                }
+                else{
+                    str = '<div class="btalk"><span> Wow!! </span></div>' ;  
+                }
+                Words.innerHTML = Words.innerHTML + str;
+            }
+        }
     </script>
 
 
