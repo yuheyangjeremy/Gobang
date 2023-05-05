@@ -7,8 +7,6 @@ const cookies = new Cookies();
 
 import Game from './game';
 import Records from './records';
-import "./iframe.css";
-import "./styles.css";
 
 class User extends React.Component{
     constructor(props){
