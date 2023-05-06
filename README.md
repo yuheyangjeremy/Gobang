@@ -19,4 +19,4 @@ npm start
 ```
 
 ## Settings
-The server port is 3000 and the client port is 80, please use http://localhost:80/index for testing
+The server port is 3000 and the client port is 80, please use http://localhost:80 for testing
