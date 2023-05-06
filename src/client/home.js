@@ -7,6 +7,7 @@ import User from "./user";
 import Admin from "./admin";
 
 class Home extends React.Component{
+    // Constructor for Home.
     constructor(props) {
         super(props);
         this.check = this.check.bind(this);

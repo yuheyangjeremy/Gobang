@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import $ from 'jquery';
 
 function Records(props){
+    // Constructor for Records.
     const [games, setGames] = useState([]);
     const [status, setStatus] = useState(0);
     const [gameId, setGameId] = useState(0);
@@ -15,15 +16,18 @@ function Records(props){
         .catch((err) => console.error(err));
     }, []);
 
+    // Return players to list view.
     const returnToListView = () => {
       setStatus(0);
     }
 
+    // Check current records.
     const viewRecordDetails = (gameId) => {
       setStatus(1);
       setGameId(gameId)
     }
 
+    // HTML code for players to check their information.
     if(status == 0){
       return (
         <div className="container">

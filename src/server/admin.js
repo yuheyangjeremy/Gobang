@@ -4,11 +4,14 @@ const router = express.Router();
 const cors = require('cors');
 router.use(cors());
 
+// Set up database access parameters.
 const { db, User, Game } = require("./db");
 const { application } = require("express");
 
+// Connect to the database.
 db.on("error", console.error.bind(console, "Connection error:"));
 
+// Open a connection.
 db.once("open", function () {
     console.log("Connection is open...");
 

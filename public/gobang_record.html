@@ -128,23 +128,23 @@
 				this.chessboard = this.gobang.children[0]
 				this.chessmans = this.gobang.children[1]
 
-				// 棋盘样式
+				// Dimensions of a gameboard.
 				this.gobangStyle = Object.assign({
 					padding: 20,
 					count: 18
 				}, options.gobangStyle || {})
 
-				// 棋盘元素
+				// Elements on a gameboard.
 				this.lattice = {
 					width: (this.gobang.clientWidth - this.gobangStyle.padding * 2) / this.gobangStyle.count,
 					height: (this.gobang.clientHeight - this.gobangStyle.padding * 2) / this.gobangStyle.count
 				}
 
-				// 初始化
+				// Initialize a gameboard.
 				this.resetAndInit()
 			}
 
-			// 初始化
+			// Initialize a gameboard.
 			resetAndInit() {
 
 				this.final_record = null;
@@ -173,25 +173,25 @@
 							this.final_status = this.status;
 					})
 				},1000)
-				// 角色 => 1黑棋 2白棋
+				// Role => 1 - Black; 2 - White
 
-				// 是否已分出胜负
+				// Winner available?
 				this.win = true
 
-				//落子方
+				// Current player.
 				this.currentPlayer = // Status
 
-				// 走棋记录
+				// Play history.
 				this.history = []
 
-				// 当前步
+				// Current steps.
 				this.currentStep = 0
 
-				// 清空棋子和事件
+				// Clear elements and events.
 				this.chessmans.onclick = null
 				this.chessmans.innerHTML = ''
 
-				// 初始化
+				// Initialize all elememnts and a gameboard.
 				this.drawChessboard()
 				this.listenDownChessman()
 				this.initChessboardMatrix()
@@ -204,7 +204,7 @@
 
 			}
 
-			// 棋盘矩阵
+			// Initialize the gameboard matrix.
 			initChessboardMatrix() {
 				const checkerboard = []
 				for (let x = 0; x < this.gobangStyle.count + 1; x++) {
@@ -216,10 +216,10 @@
 				this.checkerboard = checkerboard
 			}
 
-			// 刻画棋盘
+			// Render a gameboard.
 			drawChessboard() {
 				const { gobangStyle, gobang } = this
-				// 棋盘网格
+				// Lattices of a gameboard.
 				const lattices = Array.from({ 
 					length: gobangStyle.count * gobangStyle.count 
 				}, () => `<span class="lattice"></span>`).join('')
@@ -228,7 +228,7 @@
 				this.gobang.style.border = `${gobangStyle.padding}px solid #ddd`
 			}
 			
-			// 刻画棋子
+			// Render a piece.
 			drawChessman(x, y, isBlack) {
 				const { gobangStyle, lattice, gobang } = this
 				const newChessman = document.createElement('div')
@@ -239,20 +239,20 @@
 				newChessman.style.left = (x * lattice.width) - lattice.width * 0.3
 				newChessman.style.top = (y * lattice.height) - lattice.height * 0.3
 				this.chessmans.appendChild(newChessman)
-				// 每次落子结束都要判断输赢
+				// Determine if a winner is available after placing a piece.
 			}
 
-			// 落子
+			// Place a piece.
 			listenDownChessman(isBlack = false) {
 				this.chessmans.onclick = event => {
-					// 判断目前落子方
+					// Check whose turn.
 					if (this.status !== 0){
 						return false
 					}
 					if (this.currentPlayer !== this.role){
 						return false
 					}
-					// 如果点击的是棋子则中断
+					// Disallow users to place pieces on positions where pieces are already available. 
 					if (event.target.className.includes('chessman ')) {
 						return false
 					}
@@ -261,13 +261,13 @@
 					x = Math.round(x / this.lattice.width)
 					y = Math.round(y / this.lattice.height)
 
-					// 空的棋位才可落子
+					// Allow users to place pieces on empty positions.
 					const effectiveBoard = !!this.checkerboard[x]
 					if (effectiveBoard && 
 							this.checkerboard[x][y] !== undefined && 
 							Object.is(this.checkerboard[x][y], 0)) {
 
-						// 落子后，更新矩阵，切换角色，并记录
+						// Refresh the matrix, switch to another role, and record the current status after placing a piece.
 						fetch('http://localhost:3000/game/down/'+gameId,{
 								method: "PUT",
 								headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -282,11 +282,11 @@
 									this.checkReferee(x, y, Object.is(this.role, 1) ? 1 : 2)
 								}, 100)
 
-								// 落子完毕后，有可能是悔棋之后落子的，这种情况下就该重置历史记录
+								// Reset history should users undo their steps.
 								this.history.length = this.currentStep
 								this.history.push({ x, y, role: this.role })
 
-								// 保存坐标，角色，快照
+								// Save coordinates, roles, and snapshots.
 								this.currentStep++
 								})
 						
@@ -295,14 +295,14 @@
 				}
 			}
 
-			// 判断输赢
+			// Determine a winner.
 			checkReferee(x, y, role) {
 				if ((x == undefined) || (y == undefined) || (role == undefined)) return
 
-				// 连杀分数
+				// Combo for players.
 				let countContinuous = 0
 
-				// 所在矩阵数据
+				// Get matrix status.
 				const XContinuous = this.checkerboard.map(x => x[y])
 				const YContinuous = this.checkerboard[x]
 				const S1Continuous = []
@@ -310,20 +310,20 @@
 
 				this.checkerboard.forEach((_y, i) => {
 					
-					// 左斜线
+					// Positive slope
 					const S1Item = _y[y - (x - i)]
 					if (S1Item !== undefined) {
 						S1Continuous.push(S1Item)
 					}
 
-					// 右斜线
+					// Negative slope.
 					const S2Item = _y[y + (x - i)]
 					if (S2Item !== undefined) {
 						S2Continuous.push(S2Item)
 					}
 				})
 
-				// 当前落棋点所在的X轴/Y轴/交叉斜轴，只要有能连起来的5个子的角色即有胜者
+				// Winners will be those who connect at least five pieces of a same color horizontally, vertically, and/or diagonally.
 				;[XContinuous, YContinuous, S1Continuous, S2Continuous].forEach(axis => {
 					if (axis.some((x, i) => axis[i] !== 0 &&
 																	axis[i-2] === axis[i-1] &&
@@ -334,7 +334,7 @@
 					}
 				})
 
-				// 如果赢了，则解绑事件
+				// Reset events when winners are available.
 				if (countContinuous) {
 					this.chessmans.onclick = null
 					this.win = true
@@ -350,7 +350,7 @@
 				}
 			}
 
-			// 悔棋
+			// Undo
 			regretChess() {
 				fetch('http://localhost:3000/game/checkRegret/'+gameId,{
 					method: "PUT",
@@ -360,7 +360,7 @@
 				this.cleanCheckerBoard()
 			}
 
-			// 撤销悔棋
+			// Revoke undo.
 			// revokedRegretChess() {
 			// 	const next = this.history[this.currentStep]
 			// 	if (next) {
@@ -378,7 +378,7 @@
 							headers: { "Content-Type": "application/x-www-form-urlencoded" },
 							body: "winner="+((this.role == 1) ? 2 : 1) + "&startTime="+startTime+"&elapsedTime="+elapsedTime
 				})
-				// alert(`${role == 1 ? '黑' : '白'}子胜，${countContinuous}杀！`)
+				// alert(`${role == 1 ? 'Black' : 'White'} wins, ${countContinuous} combos!`)
 				alert((this.role == 1 ? this.player2name : this.player1name) +" win!")
 				clearInterval(this.interval)
 			}
@@ -417,7 +417,7 @@
 
 		}
 
-		// 实例化游戏
+		// Instantiate a game.
 		const gobangGame = new Gobang({
 			//role: 2,
 			canvas: 'game',
@@ -433,23 +433,23 @@
 
 		
 
-		// 获取计时器元素
+		// Obtain the timer element.
 		const timerElement = document.getElementById('timer');
 
-		// 定义计时器变量
+		// Set up a timer.
 		let seconds = 0;
 		let minutes = 0;
 		let hours = 0;
 
 		let elapsedTime = null;
 
-		// 创建计时器
+		// Create a timer.
 		function updateTime() {
 			if (!gobangGame.win) {
 				seconds++;
 			}
 
-			// 更新计时器的显示
+			// Update a timer.
 			if (seconds == 60) {
 				seconds = 0;
 				minutes++;
@@ -459,10 +459,10 @@
 				hours++;
 			}
 
-			// 将时间格式化为字符串
+			// Format time as a string.
 			const timeString = `Elapsed Time: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-			// 更新计时器元素的文本内容
+			// Update a timer with the current info.
 			timerElement.textContent = timeString;
 
 			elapsedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;

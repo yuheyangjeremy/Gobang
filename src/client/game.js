@@ -3,6 +3,7 @@ import React from 'react';
 import $ from 'jquery';
 
 class Game extends React.Component{
+    // Constructor for Game.
     constructor(props){
         super(props);
     }

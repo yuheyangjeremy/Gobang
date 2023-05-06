@@ -8,6 +8,7 @@ const UserSchema = mongoose.Schema({
     admin: { type: Boolean, required: true }
 });
 
+// Table structure of the database.
 const GameSchema = mongoose.Schema({
     gameId: { type: Number, unique: true },
     player1: { type: String },
@@ -20,10 +21,11 @@ const GameSchema = mongoose.Schema({
     comments:[{role:Number, x: Number}]
 });
 
-
+// Set up user models of the database.
 const User = mongoose.model("User", UserSchema);
 const Game = mongoose.model("Game", GameSchema);
 
+// Set up a database connection.
 const db = mongoose.connection;
 
 module.exports ={ db, User, Game };

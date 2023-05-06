@@ -1,4 +1,4 @@
-/* 对整个登录表单进行样式设置 */
+/* Styles for the login form */
 form {
   background-color: #fff;
   border-radius: 6px;
@@ -8,7 +8,7 @@ form {
   padding: 20px;
 }
 
-/* 对标题进行样式设置 */
+/* Styles for the heading h1 */
 h1 {
   color: #333;
   font-family: Arial, sans-serif;
@@ -18,7 +18,7 @@ h1 {
   text-align: center;
 }
 
-/* 对输入框进行样式设置 */
+/* Styles for input boxes */
 input[type="text"],
 input[type="email"],
 input[type="password"] {
@@ -32,7 +32,7 @@ input[type="password"] {
   width: 95%;
 }
 
-/* 对标签进行样式设置 */
+/* Styles for label elements */
 label {
   color: #333;
   display: block;
@@ -43,7 +43,7 @@ label {
   text-align: left;
 }
 
-/* 对按钮进行样式设置 */
+/* Styles for buttons */
 button {
   background-color: #008000;
   border: none;

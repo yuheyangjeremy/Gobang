@@ -9,6 +9,7 @@ import Game from './game';
 import Records from './records';
 
 class User extends React.Component{
+    // Constructor for User.
     constructor(props){
         super(props);
         this.state = { status: 0, gameId: -1, role: 0  };

@@ -4,13 +4,17 @@ const router = express.Router();
 const cors = require('cors');
 router.use(cors());
 
+// Set up database access parameters.
 const { db, User, Game } = require("./db");
 
+// Database connection error.
 db.on("error", console.error.bind(console, "Connection error:"));
 
+// Open a connection.
 db.once("open", function () {
     console.log("Connection is open...");
 
+    // Check player's status and update it.
     router.put('/down/:gameId', (req, res) => {
         var role = req.body['role'];
         var x = req.body['x'];
@@ -28,6 +32,7 @@ db.once("open", function () {
         });
     })
 
+    // Add comments via gameid.
     router.put('/addComments/:gameId', (req, res) => {
         var role = parseInt(req.body['role']);
         var x = parseInt(req.body['type']);
@@ -39,6 +44,7 @@ db.once("open", function () {
         });
     })
 
+    // Join a game.
     router.post('/join', (req, res) => {
         Game.find().sort({ gameId: -1}).limit(1)
             .exec((err, result) => {
@@ -67,6 +73,7 @@ db.once("open", function () {
             })
     })
 
+    // Check if it is possible to perform an undo,
     router.put('/checkRegret/:gameId', (req, res) => {
         let role = parseInt(req.body['role']) + 2
         Game.findOneAndUpdate({ gameId: req.params['gameId']}, {
@@ -76,6 +83,7 @@ db.once("open", function () {
         })
     })
 
+    // Perform an undo.
     router.put('/regret/:gameId', (req, res) => {
         Game.findOne({ gameId: req.params['gameId'] }, (err, result) => {
             if (err) {
@@ -109,6 +117,7 @@ db.once("open", function () {
         })
     })
 
+    // Reset a game.
     router.put('/reset/:gameId', (req, res) => {
         Game.findOneAndUpdate({ gameId: req.params['gameId'] }, { 
             $set: { Status: 0 }
@@ -118,6 +127,7 @@ db.once("open", function () {
         });
     })
 
+    // Get the current gameId.
     router.get('/:gameId', (req, res) => {
         Game.findOne({ gameId: req.params['gameId'] }, (err, result) =>{
             if(err){
@@ -128,6 +138,7 @@ db.once("open", function () {
         })
     })
 
+    // Check who is the winner via a gameId.
     router.put('/win/:gameId', (req, res) =>{
         var winner = req.body['winner'];
         Game.findOneAndUpdate({ gameId: req.params['gameId'] }, { 
@@ -138,17 +149,19 @@ db.once("open", function () {
         });
     })
 
+    // Start a game.
     router.get('/startgame/:gameId', (req, res) => {
         Game.findOne({ gameId: req.params['gameId'] }, (err, result) => {
             res.send(result);
         })
     })
 
+    // End a game.
     router.put('/endgame', (req, res) => {
-        // udpate the game status here if you want
+        // update the game status here if you want
     })
 
-    // you can add a test game here by using postman
+    // TestGame is available via using postman.
     router.get('/testGame', (req, res) => {
         Game.create({ gameId: 2, player1: "user002", player2: "user003", record: []})
     })

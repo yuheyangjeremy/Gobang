@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import $ from 'jquery';
 
 function Admin() {
+    // Constructor for Admin.
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -13,6 +14,7 @@ function Admin() {
         .catch((err) => console.error(err));
     }, []);
 
+    // Delete a user via UID.
     const deleteUser = (uid) => {
         // "localhost:3000" could be omitted by setting proxy in package.json
         let delete_url = "http://localhost:3000/admin/users/" + uid;

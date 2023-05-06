@@ -9,6 +9,7 @@ import Login from './client/login';
 import User from './client/user';
 import Admin from './client/admin';
 
+// Initialize the app.
 const APP = () => {
     return(
         <BrowserRouter>
@@ -19,6 +20,7 @@ const APP = () => {
     );
 }
 
+// Render the app.
 const root = ReactDOM.createRoot(document.querySelector('#app'));
 root.render(
     <React.StrictMode>
